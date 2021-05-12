@@ -11,11 +11,11 @@
     </head>
     <body style="margin: 20px">
         <h1>Editar Contatos</h1>
-        <hr />
+        <hr>
         <form action="SalvarEdicaoContato" method="post">
             <%--<c:set var="idDb" value="${contato.id}" />--%>
-            <input type="hidden" name="id" value="${contato.id}" />
-            <br/>
+            <input type="hidden" name="id" value="${contato.id}">
+            <br>
             <h4>Altere os dados desejados abaixo</h4>
             <table border="1" cellpadding="3" cellspacing="0">
                 <tr>
@@ -23,7 +23,7 @@
                         Nome:
                     </td>
                     <td>
-                        <input type="text" name="nome" maxlength="100" value="${contato.nome}" />
+                        <input type="text" name="nome" maxlength="100" value="${contato.nome}">
                     </td>
                 </tr>
                 <tr>
@@ -31,7 +31,7 @@
                         Email:
                     </td>
                     <td>
-                        <input type="text" name="email" maxlength="50" value="${contato.email}" />
+                        <input type="text" name="email" maxlength="50" value="${contato.email}">
                     </td>
                 </tr>
                 <tr>
@@ -39,7 +39,7 @@
                         Telefone:
                     </td>
                     <td>
-                        <input type="text" name="fone" maxlength="50" value="${contato.fone}" />
+                        <input type="text" name="fone" maxlength="50" value="${contato.fone}">
                     </td>
                 </tr>
                 <tr>
@@ -50,7 +50,7 @@
             </table>
         </form>
         <h3><a href="index.jsp">← Voltar</a></h3>
-        <br />
-        <br />
+        <br>
+        <br>
     </body>
 </html>

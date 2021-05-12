@@ -24,10 +24,10 @@ public class ExcluirContatoController extends HttpServlet {
 // 1 - OBTER OS DADOS DO FORMULARIO
 // 2 - VALIDAR DADOS
         try {
-            idParaDeletar = Integer.parseInt(request.getParameter("idContatoParaExcluir"));
+            idParaDeletar = Integer.parseInt(request.getParameter("id"));
         } catch (NumberFormatException e) {
-            System.out.println("[ExcluirContatoController] NumberFormatException parsing idContatoParaExcluir");
-            erros.add("[ExcluirContato] NumberFormatException parsing idContatoParaExcluir");
+            System.out.println("[ExcluirContatoController] NumberFormatException parsing id");
+            erros.add("[ExcluirContato] NumberFormatException parsing id");
         }
         if(idParaDeletar == -1) {
             erros.add("[ExcluirContato] id informado eh invalido");
@@ -37,7 +37,7 @@ public class ExcluirContatoController extends HttpServlet {
         String erroDb = null;
         ContatoRepository cr = new ContatoRepository();
         try {
-            cr.excluir(idParaDeletar);
+            cr.excluirPorId(idParaDeletar);
         } catch (Exception e) {
             System.out.println("[ExcluirContatoController] Exception ao excluir contato na DB");
             erroDb = e.getMessage();

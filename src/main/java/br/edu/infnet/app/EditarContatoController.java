@@ -3,7 +3,6 @@ package br.edu.infnet.app;
 import br.edu.infnet.domain.Contato;
 import br.edu.infnet.infra.ContatoRepository;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -22,58 +21,54 @@ public class EditarContatoController extends HttpServlet {
         // 1 - OBTER OS DADOS DO FORMULARIO
         String erroDb = null;
         Contato contato = new Contato();
+        contato.setId(Integer.parseInt(request.getParameter("id")));
         contato.setNome(request.getParameter("nome") );
         contato.setEmail(request.getParameter("email") );
         contato.setFone(request.getParameter("fone") );
+
+        // DEBUG (exibir contato)
+        System.out.println("[EditarContatoController] contato logo no inicio = " + contato.toString());
         
-        
-        // 2 - VALIDAR DADOS
+        // 2 - Buscar contato no banco de dados pela Id
+        ContatoRepository cr = new ContatoRepository();
+        try {
+            contato = cr.buscarPorId(contato.getId());
+        } catch (Exception e) {
+            System.out.println("[EditarContatoController] Exception ao editar contato");
+            erroDb = e.getMessage();
+        }
+
+        // DEBUG (exibir contato)
+        System.out.println("[EditarContatoController] contato apos busca = " + contato.toString());
+
+        // 3 - VALIDAR DADOS
         ArrayList<String> erros = new ArrayList<>();
-        
-        if(StringUtils.isBlank(contato.getNome() ) ) {
+
+        if (StringUtils.isBlank(contato.getNome())) {
             erros.add("O campo nome é obrigatório");
         }
-        
-        if(StringUtils.isBlank(contato.getEmail()) ) {
+
+        if (StringUtils.isBlank(contato.getEmail())) {
             erros.add("O campo email é obrigatório");
         }
-        
-        if(StringUtils.isBlank(contato.getFone()) ) {
+
+        if (StringUtils.isBlank(contato.getFone())) {
             erros.add("O campo telefone é obrigatório");
-        } else if(!StringUtils.isNumeric(contato.getFone() ) ) {
+        } else if (!StringUtils.isNumeric(contato.getFone())) {
             erros.add("O campo telefone deve conter apenas números");
         }
-        
-        if(erros.isEmpty() ) {
-            // -----------
-            // 3 - EXECUTAR O PROCESSAMENTO
-            ContatoRepository cr = new ContatoRepository();
-            try {
-                cr.inserir(contato);
-            }
-            catch (Exception e) {
-                System.out.println("[CadastrarContatoController] Exception ao inserir contato na DB");
-                erroDb = e.getMessage();
-                request.setAttribute("dadosExistem", "Ja existe contato com esses dados no cadastro");
-            }
-            
-            // 4 - COLOCAR DADOS NA REQUISICAO
-            if(erroDb != null ) { // Deu erro na gravacao no banco de dados
-                request.setAttribute("erroDb", erroDb);
-                request.setAttribute("contato", contato);
-            } else { // Nao deu erro na gravacao no banco de dados
-                request.setAttribute("sucesso", "Contato salvo com sucesso!");
-                request.setAttribute("contato", null);
-                
-            }
-        } else { // Deu erro na validacao dos dados do formulario (email ou telefone invalido, etc)
-            request.setAttribute("erros", erros);
+
+        // 4 - COLOCAR DADOS NA REQUISICAO
+        if (erros.isEmpty()) {
+//            request.setAttribute("sucesso", "Contato carregado com sucesso!");
+            request.setAttribute("contato", contato);
         }
-        
+
         // 5 - REDIRECIONAR
-        RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+        System.out.println("[EditarContatoController] Encerrando execucao");
+        RequestDispatcher rd = request.getRequestDispatcher("editar_contato.jsp");
         rd.forward(request, response);
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 
 public class FabricaDeConexoes {
     
+    private static String erroFc = null;
+    
     public static Connection conectar() {
         
         Connection retorno = null;
@@ -24,6 +26,8 @@ public class FabricaDeConexoes {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("[FabricaDeConexoes] Erro ao conectar no banco de dados");
+            setErroFc(e.getMessage().substring(0, e.getMessage().indexOf("\n") ) );
+            System.out.println("[FabricaDeConexoes] e.getMessage = " + getErroFc() );
         }
         return retorno;
     }
@@ -35,11 +39,19 @@ public class FabricaDeConexoes {
                 conn.close();
 //                System.out.println("[FabricaDeConexoes] Conexao com banco fechada com sucesso");
             } else {
-                System.out.println("[FabricaDeConexoes] Estado da conexao com banco desconhecido, impossivel fechar");
+                System.out.println("[FabricaDeConexoes] Estado da conexao com banco desconhecido (possivelmente ja fechada), impossivel fechar");
             }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("[FabricaDeConexoes] Erro ao desconectar no banco de dados");
         }
+    }
+
+    public static String getErroFc() {
+        return erroFc;
+    }
+
+    public static void setErroFc(String erroFabCon) {
+        erroFc = erroFabCon;
     }
 }

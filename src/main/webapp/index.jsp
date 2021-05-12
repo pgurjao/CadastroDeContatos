@@ -1,9 +1,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-    "http://www.w3.org/TR/html4/loose.dtd">
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -132,8 +130,8 @@
                                     
                                     <form action="ExcluirContato" method="post">
                                         <!-- radio e botao para excluir -->
-<!--                                        <input type="radio" name="id" value="${contato.id}">
-                                        <input type="submit" value="Excluir">-->
+                                        <!-- <input type="radio" name="id" value="${contato.id}">
+                                        <input type="submit" value="Excluir"> -->
                                         <!-- imagem como botao -->
                                         <input type="hidden" id="exclusao" name="id" value="${contato.id}">
                                         <input type="image" alt="Submit" src="trash_icon.png">

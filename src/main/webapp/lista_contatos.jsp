@@ -28,13 +28,16 @@
         </script>
     </head>
     <body style="margin: 20px">
-        <h1>Cadastro de Contatos</h1>
+        <h1>Cadastro de Contatos<h4>[<a href="Logout">Logout</a>]</h4></h1>
         <hr>
         
         <h4>Session ID: ${pageContext.session.id}</h4>
         <h4>usuario.toString(): ${usuario}</h4>
-        <h4>usuario: ${usuario.usuario}</h4>
-        <h4>senha: ${usuario.senha}</h4>
+        <br>
+        <h4><a href="Logout">Logout</a></h4>
+        
+        <!--<h4>usuario: ${usuario.usuario}</h4>-->
+        <!--<h4>senha: ${usuario.senha}</h4>-->
         <br>
         
         <%-- FORMULARIO DE INCLUSAO DE CONTATO --%>

@@ -19,17 +19,18 @@ public class CadastrarContatoController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        HttpSession sessao = request.getSession();
-        
-//        System.out.println("[sout] " + sessao.getId() );
-        
-
         // 1 - OBTER OS DADOS DO FORMULARIO
         String erroDb = null;
         Contato contato = new Contato();
         contato.setNome(request.getParameter("nome"));
         contato.setEmail(request.getParameter("email"));
         contato.setFone(request.getParameter("fone"));
+        
+//        if (request.getParameter("Page").equals("Logout") ) {
+//            System.out.println("[CadastrarContatoController] Logout detectado");
+//        } else {
+//            System.out.println("[CadastrarContatoController] Logout nao detectado");
+//        }
 
         // 2 - VALIDAR DADOS
         ArrayList<String> erros = new ArrayList<>();

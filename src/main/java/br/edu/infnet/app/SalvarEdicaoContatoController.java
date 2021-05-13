@@ -107,7 +107,7 @@ public class SalvarEdicaoContatoController extends HttpServlet {
 
     // 5 - REDIRECIONAR
     System.out.println("[SalvarEdicaoContatoController] Encerrando execucao");
-    RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+    RequestDispatcher rd = request.getRequestDispatcher("lista_contatos.jsp");
     rd.forward (request, response);
 }
 

@@ -47,7 +47,7 @@ public class ExcluirContatoController extends HttpServlet {
         }
 
 // 5 - REDIRECIONAR
-        RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("lista_contatos.jsp");
         rd.forward(request, response);
     }
 

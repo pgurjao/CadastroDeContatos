@@ -10,13 +10,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 
-@WebServlet(name = "CadastrarContatoController", urlPatterns = {"/CadastrarContato"})
+@WebServlet(name = "CadastrarContatoController", urlPatterns = {"/ListaContatos"})
 public class CadastrarContatoController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        HttpSession sessao = request.getSession();
+        
+//        System.out.println("[sout] " + sessao.getId() );
+        
 
         // 1 - OBTER OS DADOS DO FORMULARIO
         String erroDb = null;
@@ -75,7 +81,7 @@ public class CadastrarContatoController extends HttpServlet {
         }
 
     // 5 - REDIRECIONAR
-    RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+    RequestDispatcher rd = request.getRequestDispatcher("lista_contatos.jsp");
     rd.forward (request, response);
 }
 

@@ -49,7 +49,7 @@
                 </tr>
             </table>
         </form>
-        <h3><a href="index.jsp">← Voltar</a></h3>
+        <h3><a href="lista_contatos.jsp">← Voltar</a></h3>
         <br>
         <br>
     </body>

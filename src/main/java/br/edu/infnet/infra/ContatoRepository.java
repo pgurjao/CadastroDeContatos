@@ -124,14 +124,16 @@ public class ContatoRepository {
         }
     }
 
-    public List<Contato> listar() throws Exception {
+    public List<Contato> listar(String nomeUsuario) throws Exception {
 
         List<Contato> retorno = new ArrayList<>();
         Connection conn = FabricaDeConexoes.conectar();
 
         try {
-            String sql = "SELECT * FROM contatos ORDER BY nome";
+//            String sql = "SELECT * FROM contatos ORDER BY nome";
+            String sql = "SELECT * FROM contatos WHERE usuario = ? ORDER BY nome;";
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, nomeUsuario);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -140,6 +142,7 @@ public class ContatoRepository {
                 contato.setNome(rs.getString("nome"));
                 contato.setEmail(rs.getString("email"));
                 contato.setFone(rs.getString("fone"));
+                contato.setUsuario(rs.getString("usuario"));
                 retorno.add(contato);
             }
         } catch (SQLException e) {

@@ -6,6 +6,7 @@ public class Contato {
     private String nome;
     private String email;
     private String fone;
+    private String usuario;
 
     public int getId() {
         return id;
@@ -38,11 +39,17 @@ public class Contato {
     public void setFone(String fone) {
         this.fone = fone;
     }
+    
+    public String getUsuario() {
+        return usuario;
+    }
 
-    @Override
-    public String toString() {
-        return "Contato{" + "id=" + id + ", nome=" + nome + ", email=" + email + ", fone=" + fone + '}';
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
     
-    
+    @Override
+    public String toString() {
+        return "Contato{" + "id=" + id + ", nome=" + nome + ", email=" + email + ", fone=" + fone + ", usuario=" + usuario + '}';
+    }
 }

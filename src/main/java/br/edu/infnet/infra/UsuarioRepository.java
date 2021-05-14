@@ -32,13 +32,16 @@ public class UsuarioRepository {
         } catch (SQLException e) {
             System.out.println("[UsuarioRepository] Exception ao buscarPorUsuario usuario");
 //            e.printStackTrace();
-            this.setErroDbRepository(FabricaDeConexoes.getErroFc());
+            this.setErroDbRepository(e.getMessage() );
             System.out.println("[UsuarioRepository] ErroDbRepository = " + this.getErroDbRepository() );
 //            System.out.println(e.getMessage() );
             throw e;
         } catch (Exception e) {
 //            e.printStackTrace();
+            this.setErroDbRepository(FabricaDeConexoes.getErroFc());
+//            System.out.println("[UsuarioRepository] erroDbRepo = " + this.getErroDbRepository() );
             System.out.println("[UsuarioRepository] Exception generico ao buscarPorUsuario usuario");
+            throw e;
         } finally {
 //            System.out.println("[UsuarioRepository] fechando conexao com banco...");
             FabricaDeConexoes.desconectar(conn);

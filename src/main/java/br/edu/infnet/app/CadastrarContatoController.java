@@ -13,24 +13,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 
-@WebServlet(name = "CadastrarContatoController", urlPatterns = {"/ListaContatos"})
+@WebServlet(name = "CadastrarContatoController", urlPatterns = {"/CadastrarContato"})
 public class CadastrarContatoController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
         // 1 - OBTER OS DADOS DO FORMULARIO
+        HttpSession session = request.getSession();
         String erroDb = null;
         Contato contato = new Contato();
         contato.setNome(request.getParameter("nome"));
         contato.setEmail(request.getParameter("email"));
         contato.setFone(request.getParameter("fone"));
-        
-//        if (request.getParameter("Page").equals("Logout") ) {
-//            System.out.println("[CadastrarContatoController] Logout detectado");
-//        } else {
-//            System.out.println("[CadastrarContatoController] Logout nao detectado");
-//        }
+        contato.setUsuario( session.getAttribute("usuarioNome").toString() );
 
         // 2 - VALIDAR DADOS
         ArrayList<String> erros = new ArrayList<>();
@@ -50,7 +46,7 @@ public class CadastrarContatoController extends HttpServlet {
         }
 
         if (erros.isEmpty()) {
-            // -----------
+
             // 3 - EXECUTAR O PROCESSAMENTO
             ContatoRepository cr = new ContatoRepository();
 

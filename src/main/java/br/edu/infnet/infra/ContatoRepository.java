@@ -18,11 +18,12 @@ public class ContatoRepository {
         Connection conn = FabricaDeConexoes.conectar();
         try {
 
-            String sql = "INSERT INTO contatos (nome, email, fone) VALUES (?,?,?)";
+            String sql = "INSERT INTO contatos (nome, email, fone, usuario) VALUES (?,?,?,?)";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, contato.getNome());
-            ps.setString(2, contato.getEmail());
-            ps.setString(3, contato.getFone());
+            ps.setString(1, contato.getNome() );
+            ps.setString(2, contato.getEmail() );
+            ps.setString(3, contato.getFone() );
+            ps.setString(4, contato.getUsuario() );
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("[ContatoRepository] SQLException ao inserir: registro duplicado?");
@@ -124,8 +125,13 @@ public class ContatoRepository {
         }
     }
 
-    public List<Contato> listar(String nomeUsuario) throws Exception {
+    public List<Contato> listar(String usuarioNome) throws Exception {
 
+        if (usuarioNome == null || usuarioNome.isBlank() ) {
+            return null;
+        }
+        usuarioNome = usuarioNome.strip();
+        
         List<Contato> retorno = new ArrayList<>();
         Connection conn = FabricaDeConexoes.conectar();
 
@@ -133,7 +139,7 @@ public class ContatoRepository {
 //            String sql = "SELECT * FROM contatos ORDER BY nome";
             String sql = "SELECT * FROM contatos WHERE usuario = ? ORDER BY nome;";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, nomeUsuario);
+            ps.setString(1, usuarioNome);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

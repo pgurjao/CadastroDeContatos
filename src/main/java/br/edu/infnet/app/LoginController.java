@@ -2,7 +2,6 @@ package br.edu.infnet.app;
 
 import br.edu.infnet.domain.Usuario;
 import br.edu.infnet.infra.UsuarioRepository;
-import com.mysql.cj.x.protobuf.MysqlxNotice;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
@@ -24,6 +23,8 @@ public class LoginController extends HttpServlet {
         String erroDb = null;
         boolean usuarioCorreto = false;
         boolean senhaCorreta = false;
+        
+        HttpSession session = request.getSession();
         Usuario usuario = new Usuario();
         Usuario usuarioSalvo = new Usuario();
 
@@ -36,7 +37,10 @@ public class LoginController extends HttpServlet {
         
         if (!request.getMethod().equalsIgnoreCase("POST") ) {
             erros.add("Operacao invalida");
+            session.invalidate();
+            request.removeAttribute("usuario");
             request.setAttribute("erros", erros);
+            System.out.println("[LoginController] getMethod = " + request.getMethod() );
             RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
             rd.forward (request, response);
         }
@@ -62,11 +66,20 @@ public class LoginController extends HttpServlet {
                 System.out.println("[LoginController] erroDb = " + erroDb);
 //                request.setAttribute("erroDb", erroDb);
             }
-
+            
+            // INSERIR teste do erro de acesso a DB aqui <------------------------------
+            
+            if (erroDb != null) {
+                session.invalidate();
+                request.removeAttribute("usuario");
+                request.setAttribute("erroDb", erroDb);
+                RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+                rd.forward (request, response);
+            }
+            
             // DEBUG (exibir usuario retornado pelo banco de dados)
             System.out.println("[LoginController] usuarioSalvo = " + usuarioSalvo.toString() );
             
-            HttpSession session = request.getSession();
             System.out.println("[LoginController] sessionId = " + session.getId() );
             
             if (session.isNew() ) {
@@ -77,7 +90,7 @@ public class LoginController extends HttpServlet {
 
             
             // 3.1 - VERIFICAR SE USUARIO E SENHA ESTAO CORRETOS
-            if (usuario.getUsuario().equals(usuarioSalvo.getUsuario())) {
+            if (usuarioSalvo.getUsuario() != null && usuario.getUsuario().equals(usuarioSalvo.getUsuario())   ) {
                 usuarioCorreto = true;
                 System.out.println("[LoginController] Usuario correto, verificando senha...");
             } else {
@@ -86,7 +99,7 @@ public class LoginController extends HttpServlet {
                 System.out.println("[LoginController] Usuario nao localizado, login nao autorizado");
             }
 
-            if (usuario.getSenha().equals(usuarioSalvo.getSenha())) {
+            if (usuarioSalvo.getSenha() != null && usuario.getSenha().equals(usuarioSalvo.getSenha())) {
                 senhaCorreta = true;
                 System.out.println("[LoginController] Senha correta, login autorizado");
             } else {
@@ -94,11 +107,12 @@ public class LoginController extends HttpServlet {
                 erros.add("Usuario ou senha incorretos (Senha incorreta)");
                 System.out.println("[LoginController] Senha incorreta, login nao autorizado");
             }
-            
-            if (usuarioCorreto && senhaCorreta) { // Gravar SESSION ID no banco de dados
+
+            // 3.2 GRAVAR SESSION ID NO BANCO DE DADOS
+            if (usuarioCorreto && senhaCorreta) { 
                 // ur = new UsuarioRepository();
                 try {
-                    ur.gravarSessao(session.getId() , usuario.getUsuario() );
+                    ur.gravarSessao(session.getId(), usuario.getUsuario() );
                 } catch (Exception e) {
                     System.out.println("[LoginController] Exception ao gravar sessao na DB");
                     erroDb = ur.getErroDbRepository();
@@ -110,16 +124,18 @@ public class LoginController extends HttpServlet {
 
         // 4 - COLOCAR DADOS NA REQUISICAO
         if (!erros.isEmpty() ) { // Usuario ou senha nao sao iguais aos localizados no banco de dados,
-                                 // ou usuario digitou dados invalidos (em branco, null, caracteres invalidos)
+                                 // ou usuario digitou dados invalidos (em branco, null, caracteres invalidos, etc)
             request.setAttribute("erros", erros);
             usuario.setSenha("");
             request.setAttribute("usuario", usuario);
-        } else { // Array 'erros' estah vazio
+        } else { // Nao deu erro ate agora, array 'erros' estah vazio
             if (usuarioCorreto && senhaCorreta) {
                 usuario.setSenha("");
-                usuario.setCreate_time(usuarioSalvo.getCreate_time() );
-                request.setAttribute("usuario", usuario);
+//                usuario.setCreate_time(usuarioSalvo.getCreate_time() );
+//                request.setAttribute("usuario", usuario);
                 System.out.println("[LoginController] Usuario e senha corretos, login autorizado");
+                // Gravar nome de usuario na SESSION
+                session.setAttribute("usuarioNome", usuarioSalvo.getUsuario() );
             }
         }
 
@@ -127,6 +143,8 @@ public class LoginController extends HttpServlet {
             request.setAttribute("erroDb", erroDb);
             request.setAttribute("usuario", usuario);
         }
+        
+        
 
         // 5 - REDIRECIONAR
         if (!erros.isEmpty() || erroDb != null ) { // Usuario ou senha nao sao iguais aos localizados no banco de dados,
@@ -138,8 +156,11 @@ public class LoginController extends HttpServlet {
             if (erros.isEmpty() && erroDb == null && usuarioCorreto && senhaCorreta) { // Nao deu nenhum erro e usuario e senha estao corretos
                 RequestDispatcher rd = request.getRequestDispatcher("lista_contatos.jsp");
                 rd.forward (request, response);
-            } else { // Ultimo 
+            } else { // Equivalente ao "switch default", eh para pegar os estados inconsistentes.
                 erros.add("Erro desconhecido ao processar a requisicao");
+                session.invalidate();
+                usuario.setSenha("");
+                request.setAttribute("usuario", usuario);
                 RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
                 rd.forward (request, response);
             }

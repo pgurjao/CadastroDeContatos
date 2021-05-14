@@ -24,7 +24,7 @@ public class FabricaDeConexoes {
             retorno = DriverManager.getConnection(url, usuario, senha);
             
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             System.out.println("[FabricaDeConexoes] Erro ao conectar no banco de dados");
             setErroFc(e.getMessage().substring(0, e.getMessage().indexOf("\n") ) );
             System.out.println("[FabricaDeConexoes] e.getMessage = " + getErroFc() );

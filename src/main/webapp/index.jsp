@@ -5,6 +5,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <title>Login Sistema Cadastro de Contatos</title>
         
     </head>
@@ -54,7 +55,7 @@
                 <h4 style="color:red">Erro: ${erro}</h4>
             </c:forEach>
         </c:if>
-        <c:if test="${erroDb != null}">
+        <c:if test="${not empty erroDb}">
             <h4 style="color:brown">Erro ao acessar banco de dados: ${erroDb}</h4>
         </c:if>
         <br>

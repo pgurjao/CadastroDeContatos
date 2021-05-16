@@ -25,9 +25,11 @@ public class UsuarioRepository {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                usuario.setUsuario(rs.getString("usuario"));
+                
+                usuario.setNome(rs.getString("usuario"));
                 usuario.setSenha(rs.getString("senha"));
                 usuario.setCreate_time(rs.getString("create_time"));
+                usuario.setSessionId(rs.getString("session_id"));
             }
         } catch (SQLException e) {
             System.out.println("[UsuarioRepository] Exception ao buscarPorUsuario usuario");
@@ -65,7 +67,7 @@ public class UsuarioRepository {
 //            ResultSet rs = ps.executeQuery();
 //
 //            while (rs.next()) {
-//                usuario.setUsuario(rs.getString("usuario"));
+//                usuario.setNome(rs.getString("usuario"));
 //                usuario.setSenha(rs.getString("senha"));
 //                usuario.setCreate_time(rs.getString("create_time"));
 //            }

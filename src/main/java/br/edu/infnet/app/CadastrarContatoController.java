@@ -1,6 +1,6 @@
 package br.edu.infnet.app;
 
-import br.edu.infnet.domain.Contato;
+import br.edu.infnet.domain.contatos.Contato;
 import br.edu.infnet.infra.ContatoRepository;
 import java.io.IOException;
 import java.util.ArrayList;

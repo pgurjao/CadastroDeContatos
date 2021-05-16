@@ -14,6 +14,7 @@
         <hr>
         
         <h4>Session ID: ${pageContext.session.id}</h4>
+        <h4>Usuario.toString(): ${usuario}</h4>
         <br>
         
         <%-- FORMULARIO DE INCLUSAO DE CONTATO --%>
@@ -25,7 +26,7 @@
                         Usuario:
                     </td>
                     <td>
-                        <input type="text" name="usuario" maxlength="20" value="${usuario.usuario}">
+                        <input type="text" name="usuarioNome" maxlength="20" value="${usuario.nome}">
                     </td>
                 </tr>
                 <tr>

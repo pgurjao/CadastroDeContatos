@@ -1,6 +1,8 @@
 package br.edu.infnet.infra;
 
-import br.edu.infnet.domain.Contato;
+import br.edu.infnet.domain.contatos.Contato;
+import br.edu.infnet.domain.contatos.Endereco;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,17 +43,20 @@ public class ContatoRepository {
         }
     }
 
-    public void editar(Contato contato) throws Exception {
+    public void editar(Contato contato, String usuarioNome) throws Exception {
 
         Connection conn = FabricaDeConexoes.conectar();
         try {
 
-            String sql = "UPDATE contatos SET nome = ?, email = ?, fone = ? WHERE id = ?";
+            String sql = "UPDATE contatos SET nome = ?, email = ?, fone = ?, usuario = ?, endereco = ? WHERE id = ? AND usuario = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, contato.getNome());
             ps.setString(2, contato.getEmail());
             ps.setString(3, contato.getFone());
-            ps.setInt(4, contato.getId());
+            ps.setString(4, usuarioNome);
+            ps.setString(5, contato.getEndereco().toString());
+            ps.setInt(6, contato.getId());
+            ps.setString(7, usuarioNome);
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -67,17 +72,18 @@ public class ContatoRepository {
         }
     }
 
-    public Contato buscarPorId(int id) throws Exception {
+    public Contato buscarPorId(int id, String usuarioNome) throws Exception {
 
         Connection conn = FabricaDeConexoes.conectar();
         Contato contato = new Contato();
         try {
 
 //            String sql = "INSERT INTO contatos (nome, email, fone) VALUES (?,?,?)";
-            String sql = "SELECT * FROM contatos WHERE id = ?";
+//            String sql = "SELECT * FROM contatos WHERE id = ?";
+            String sql = "SELECT * FROM contatos WHERE id = ? AND usuario = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
-//            ps.setString(2, contato.getEmail() );
+            ps.setString(2, usuarioNome);
 //            ps.setString(3, contato.getFone() );
 //            ps.executeUpdate();
 
@@ -88,6 +94,7 @@ public class ContatoRepository {
                 contato.setNome(rs.getString("nome"));
                 contato.setEmail(rs.getString("email"));
                 contato.setFone(rs.getString("fone"));
+                contato.setUsuario(rs.getString("usuario"));
             }
         } catch (SQLException e) {
             System.out.println("[ContatoRepository] Exception ao buscarPorId contato");
@@ -132,6 +139,9 @@ public class ContatoRepository {
         }
         usuarioNome = usuarioNome.strip();
         
+        String json = null;
+        
+        ObjectMapper objectMapper = new ObjectMapper();
         List<Contato> retorno = new ArrayList<>();
         Connection conn = FabricaDeConexoes.conectar();
 
@@ -144,10 +154,23 @@ public class ContatoRepository {
 
             while (rs.next()) {
                 Contato contato = new Contato();
+                
                 contato.setId(rs.getInt("id"));
                 contato.setNome(rs.getString("nome"));
                 contato.setEmail(rs.getString("email"));
                 contato.setFone(rs.getString("fone"));
+                json = rs.getString("endereco");
+                System.out.println("[ContatoRepository] primeiro JSON de (" + contato.getNome() + ") = " + json);
+                System.out.println("json =");
+                System.out.println(json);
+                if (json != null) {
+                    Endereco endereco = objectMapper.readValue(json, Endereco.class);
+                    contato.setEndereco(endereco);
+                } else {
+                    json = "";
+                    contato.setEndereco(null);
+                }
+                System.out.println("[ContatoRepository] Contato(" + contato.getNome() + "): " + contato.getEndereco());
                 contato.setUsuario(rs.getString("usuario"));
                 retorno.add(contato);
             }

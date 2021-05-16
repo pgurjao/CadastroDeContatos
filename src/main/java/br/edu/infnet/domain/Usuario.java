@@ -2,25 +2,26 @@ package br.edu.infnet.domain;
 
 public class Usuario {
     
-    private int id;
-    private String usuario;
+//    private int id;
+    private String nome;
     private String senha;
     private String create_time;
+    private String sessionId;
 
-    public int getId() {
-        return id;
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public void setId(int id) {
+//        this.id = id;
+//    }
+
+    public String getNome() {
+        return nome;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getSenha() {
@@ -39,8 +40,16 @@ public class Usuario {
         this.create_time = create_time;
     }
 
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
     @Override
     public String toString() {
-        return "Usuario{" + "id=" + id + ", usuario=" + usuario + ", senha=" + senha + ", create_time=" + create_time + '}';
+        return "Usuario{" + "nome=" + nome + ", senha=" + senha + ", create_time=" + create_time + ", sessionId=" + sessionId + '}';
     }
 }

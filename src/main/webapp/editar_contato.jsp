@@ -10,8 +10,10 @@
         <title>Edicao de Contatos</title>
     </head>
     <body style="margin: 20px">
-        <h1>Editar Contatos</h1>
+        <h1>Editar Contato</h1>
         <hr>
+        <h4>Session ID: ${pageContext.session.id}</h4>
+        <h4>contato.toString(): ${contato}</h4>
         <form action="SalvarEdicaoContato" method="post">
             <%--<c:set var="idDb" value="${contato.id}" />--%>
             <input type="hidden" name="id" value="${contato.id}">
@@ -44,7 +46,60 @@
                 </tr>
                 <tr>
                     <td colspan="2" align="center">
-                        <input type="submit" value="Salvar edicao">
+                        Endereco <input type="submit" name="alterarEndereco" value="Alterar">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        CEP:
+                    </td>
+                    <td>
+                        <input type="text" name="cep" maxlength="9" value="${contato.endereco.cep}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Logradouro:
+                    </td>
+                    <td>
+                        <input type="text" name="logradouro" maxlength="50" value="${contato.endereco.logradouro}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Complemento:
+                    </td>
+                    <td>
+                        <input type="text" name="complemento" maxlength="50" value="${contato.endereco.complemento}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Bairro:
+                    </td>
+                    <td>
+                        <input type="text" name="bairro" maxlength="50" value="${contato.endereco.bairro}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Localidade:
+                    </td>
+                    <td>
+                        <input type="text" name="localidade" maxlength="50" value="${contato.endereco.localidade}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        UF:
+                    </td>
+                    <td>
+                        <input type="text" name="uf" maxlength="2" value="${contato.endereco.uf}">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <input type="submit" name="salvarContato" value="Salvar contato">
                     </td>
                 </tr>
             </table>

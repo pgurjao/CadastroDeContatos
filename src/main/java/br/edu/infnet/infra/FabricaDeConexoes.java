@@ -4,11 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class FabricaDeConexoes {
-    
+
     private static String erroFc = null;
-    
+
     public static Connection conectar() {
-        
+
         Connection retorno = null;
         try {
             // 1 - PARAMETROS
@@ -16,24 +16,27 @@ public class FabricaDeConexoes {
             String usuario = "root";
             String senha = "root";
             String url = "jdbc:mysql://localhost:3306/javaweb-armenio?zeroDateTimeBehavior=CONVERT_TO_NULL";
-            
+
             // 2 - CARREGAR O DRIVER NA MEMORIA
             Class.forName(driver);
-            
+
             // 3 - CONECTAR COM O BANCO
             retorno = DriverManager.getConnection(url, usuario, senha);
-            
+
         } catch (Exception e) {
 //            e.printStackTrace();
             System.out.println("[FabricaDeConexoes] Erro ao conectar no banco de dados");
             setErroFc(e.getMessage().substring(0, e.getMessage().indexOf("\n") ) );
             System.out.println("[FabricaDeConexoes] e.getMessage = " + getErroFc() );
+        } finally {
+//            desconectar(retorno);
         }
+
         return retorno;
     }
-    
+
     public static void desconectar (Connection conn) {
-        
+
         try {
             if (conn != null && !conn.isClosed() ) {
                 conn.close();
@@ -43,7 +46,7 @@ public class FabricaDeConexoes {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("[FabricaDeConexoes] Erro ao desconectar no banco de dados");
+            System.out.println("[FabricaDeConexoes] Erro ao desconectar do banco de dados");
         }
     }
 

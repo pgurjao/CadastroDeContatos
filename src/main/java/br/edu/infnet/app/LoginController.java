@@ -18,34 +18,37 @@ public class LoginController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // 1 - OBTER OS DADOS DO FORMULARIO
         String erroDb = null;
         boolean usuarioCorreto = false;
         boolean senhaCorreta = false;
-        
+
         HttpSession session = request.getSession();
         Usuario usuario = new Usuario();
         Usuario usuarioSalvo = new Usuario();
 
-        usuario.setUsuario(request.getParameter("usuario"));
+        usuario.setNome(request.getParameter("usuarioNome"));
         usuario.setSenha(request.getParameter("senha"));
         // usuario.setCreate_time(request.getParameter("create_time"));
 
         // 2 - VALIDAR DADOS
         ArrayList<String> erros = new ArrayList<>();
-        
+
+        // 2.1 - VERIFICAR SE O METODO UTILIZANDO FOI 'POST' E REJEITAR SE NAO TIVER SIDO
         if (!request.getMethod().equalsIgnoreCase("POST") ) {
             erros.add("Operacao invalida");
             session.invalidate();
+            usuario.setSenha("");
             request.removeAttribute("usuario");
             request.setAttribute("erros", erros);
-            System.out.println("[LoginController] getMethod = " + request.getMethod() );
+            System.out.println("[LoginController] Erro: somente sao aceitas requisicoes via POST");
             RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
             rd.forward (request, response);
+            return;
         }
 
-        if (StringUtils.isBlank(usuario.getUsuario())) {
+        if (StringUtils.isBlank(usuario.getNome())) {
             erros.add("O campo usuario eh obrigatorio");
         }
 
@@ -56,41 +59,36 @@ public class LoginController extends HttpServlet {
         // 3 - EXECUTAR O PROCESSAMENTO
         if (erros.isEmpty()) { // Usuario e senha nao sao invalidos e podem ser buscados no banco de dados
 
+            // BUSCAR USUARIO NO BANCO DE DADOS
             UsuarioRepository ur = new UsuarioRepository();
-
             try {
-                usuarioSalvo = ur.buscarPorUsuario(usuario.getUsuario());
+                usuarioSalvo = ur.buscarPorUsuario(usuario.getNome());
             } catch (Exception e) {
                 System.out.println("[LoginController] Exception ao buscar usuario na DB");
                 erroDb = ur.getErroDbRepository();
                 System.out.println("[LoginController] erroDb = " + erroDb);
-//                request.setAttribute("erroDb", erroDb);
-            }
-            
-            // INSERIR teste do erro de acesso a DB aqui <------------------------------
-            
-            if (erroDb != null) {
-                session.invalidate();
-                request.removeAttribute("usuario");
-                request.setAttribute("erroDb", erroDb);
-                RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-                rd.forward (request, response);
-            }
-            
-            // DEBUG (exibir usuario retornado pelo banco de dados)
-            System.out.println("[LoginController] usuarioSalvo = " + usuarioSalvo.toString() );
-            
-            System.out.println("[LoginController] sessionId = " + session.getId() );
-            
-            if (session.isNew() ) {
-                System.out.println("[LoginController] session is new");
-            } else {
-                System.out.println("[LoginController] session ja existia");
             }
 
+            // DEBUG (exibir usuario retornado pelo banco de dados)
+            System.out.println("[LoginController] usuarioSalvo (retornado pelo DB) = " + usuarioSalvo.toString() );
+
+            // 3.1 - VERIFICAR SE BANCO DE DADOS RETORNOU NULL E ERRO E ENCERRAR CASO POSITIVO
+            if (erroDb != null && usuarioSalvo.getNome() == null) {
+                System.out.println("[LoginController] Erro na Db, impossivel fazer login no momento");
+                erros.add("Impossivel fazer login no momento");
+                usuario.setSenha("");
+                // request.removeAttribute("usuario");
+                request.setAttribute("usuario", usuario);
+                request.setAttribute("erros", erros);
+                request.setAttribute("erroDb", erroDb);
+                session.invalidate();
+                RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+                rd.forward (request, response);
+                return;
+            }
             
-            // 3.1 - VERIFICAR SE USUARIO E SENHA ESTAO CORRETOS
-            if (usuarioSalvo.getUsuario() != null && usuario.getUsuario().equals(usuarioSalvo.getUsuario())   ) {
+            // 3.2 - VERIFICAR SE USUARIO E SENHA ESTAO CORRETOS
+            if (usuarioSalvo.getNome() != null && usuario.getNome().equals(usuarioSalvo.getNome())   ) {
                 usuarioCorreto = true;
                 System.out.println("[LoginController] Usuario correto, verificando senha...");
             } else {
@@ -99,7 +97,7 @@ public class LoginController extends HttpServlet {
                 System.out.println("[LoginController] Usuario nao localizado, login nao autorizado");
             }
 
-            if (usuarioSalvo.getSenha() != null && usuario.getSenha().equals(usuarioSalvo.getSenha())) {
+            if (usuarioSalvo.getSenha() != null && usuarioSalvo.getNome() != null && usuario.getSenha().equals(usuarioSalvo.getSenha())) {
                 senhaCorreta = true;
                 System.out.println("[LoginController] Senha correta, login autorizado");
             } else {
@@ -108,11 +106,11 @@ public class LoginController extends HttpServlet {
                 System.out.println("[LoginController] Senha incorreta, login nao autorizado");
             }
 
-            // 3.2 GRAVAR SESSION ID NO BANCO DE DADOS
-            if (usuarioCorreto && senhaCorreta) { 
+            // 3.3 GRAVAR SESSION ID NO BANCO DE DADOS
+            if (usuarioCorreto && senhaCorreta) {
                 // ur = new UsuarioRepository();
                 try {
-                    ur.gravarSessao(session.getId(), usuario.getUsuario() );
+                    ur.gravarSessao(session.getId(), usuario.getNome() );
                 } catch (Exception e) {
                     System.out.println("[LoginController] Exception ao gravar sessao na DB");
                     erroDb = ur.getErroDbRepository();
@@ -135,7 +133,7 @@ public class LoginController extends HttpServlet {
 //                request.setAttribute("usuario", usuario);
                 System.out.println("[LoginController] Usuario e senha corretos, login autorizado");
                 // Gravar nome de usuario na SESSION
-                session.setAttribute("usuarioNome", usuarioSalvo.getUsuario() );
+                session.setAttribute("usuarioNome", usuarioSalvo.getNome() );
             }
         }
 
@@ -143,8 +141,8 @@ public class LoginController extends HttpServlet {
             request.setAttribute("erroDb", erroDb);
             request.setAttribute("usuario", usuario);
         }
-        
-        
+
+
 
         // 5 - REDIRECIONAR
         if (!erros.isEmpty() || erroDb != null ) { // Usuario ou senha nao sao iguais aos localizados no banco de dados,
@@ -160,7 +158,9 @@ public class LoginController extends HttpServlet {
                 erros.add("Erro desconhecido ao processar a requisicao");
                 session.invalidate();
                 usuario.setSenha("");
-                request.setAttribute("usuario", usuario);
+                request.removeAttribute("usuario");
+                request.setAttribute("erroDb", erroDb);
+                request.setAttribute("erros", erros);
                 RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
                 rd.forward (request, response);
             }

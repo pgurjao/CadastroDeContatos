@@ -66,6 +66,6 @@ public class Endereco {
 
     @Override
     public String toString() {
-        return "{" + "\"cep\":\"" + cep + "\", \"logradouro\":\"" + logradouro + "\", \"complemento\":\"" + complemento + "\", \"bairro\":\"" + bairro + "\", \"localidade\":\"" + localidade + "\", \"uf\":\"" + uf +"\"" + '}';
+        return "{" + "\"cep\":\"" + cep + "\",\"logradouro\":\"" + logradouro + "\",\"complemento\":\"" + complemento + "\",\"bairro\":\"" + bairro + "\",\"localidade\":\"" + localidade + "\",\"uf\":\"" + uf +"\"" + '}';
     }
 }

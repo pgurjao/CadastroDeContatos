@@ -7,18 +7,20 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <title>Login Sistema Cadastro de Contatos</title>
-        
+
     </head>
     <body style="margin: 20px">
         <h1>Login Sistema Cadastro de Contatos</h1>
         <hr>
-        
-        <h4>Session ID: ${pageContext.session.id}</h4>
-        <h4>Usuario.toString(): ${usuario}</h4>
+        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
+            <h2>DEBUG</h2>
+            <h3><p><b>Session ID: </b>${pageContext.session.id}<br>
+            <b>Usuario.toString(): </b>${usuario}</p></h3>
+        </div>
         <br>
-        
+
         <%-- FORMULARIO DE INCLUSAO DE CONTATO --%>
-        
+
         <form action="Login" method="post">
             <table border="1" cellpadding="3" cellspacing="0">
                 <tr>
@@ -45,9 +47,9 @@
             </table>
         </form>
         <br>
-        
+
         <%-- EXIBICAO DE MENSAGENS DE SUCESSO OU ERRO AO SALVAR CONTATOS --%>
-        
+
         <c:if test="${not empty sucesso}">
             <h4 style="color:green">${sucesso}</h4>
         </c:if>

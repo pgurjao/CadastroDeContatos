@@ -132,6 +132,7 @@ public class LoginController extends HttpServlet {
 //                usuario.setCreate_time(usuarioSalvo.getCreate_time() );
 //                request.setAttribute("usuario", usuario);
                 System.out.println("[LoginController] Usuario e senha corretos, login autorizado");
+                System.out.println("[LoginController] ------------------------------------------");
                 // Gravar nome de usuario na SESSION
                 session.setAttribute("usuarioNome", usuarioSalvo.getNome() );
             }
@@ -151,7 +152,7 @@ public class LoginController extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
             rd.forward (request, response);
         } else {
-            if (erros.isEmpty() && erroDb == null && usuarioCorreto && senhaCorreta) { // Nao deu nenhum erro e usuario e senha estao corretos
+            if (erros.isEmpty() && erroDb == null && usuarioCorreto && senhaCorreta) { // Usuario e senha estao corretos e nao deu erro algum
                 RequestDispatcher rd = request.getRequestDispatcher("lista_contatos.jsp");
                 rd.forward (request, response);
             } else { // Equivalente ao "switch default", eh para pegar os estados inconsistentes.

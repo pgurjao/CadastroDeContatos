@@ -2,6 +2,7 @@ package br.edu.infnet.infra;
 
 import br.edu.infnet.domain.contatos.Contato;
 import br.edu.infnet.domain.contatos.Endereco;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,16 +49,17 @@ public class ContatoRepository {
         Connection conn = FabricaDeConexoes.conectar();
         try {
 
-            String sql = "UPDATE contatos SET nome = ?, email = ?, fone = ?, usuario = ?, endereco = ? WHERE id = ? AND usuario = ?";
+            String sql = "UPDATE contatos SET nome = ?, email = ?, fone = ?, usuario = ?, endereco = ? WHERE id = ? AND usuario = ?"; // INCLUIR ENDERECO NA QUERY
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, contato.getNome());
             ps.setString(2, contato.getEmail());
             ps.setString(3, contato.getFone());
             ps.setString(4, usuarioNome);
-            ps.setString(5, contato.getEndereco().toString());
+            ps.setString(5, contato.getEndereco().toJson());
+            System.out.println("[ContatoRepository.editar] contato.getEndereco().toJson() = " + contato.getEndereco().toJson());
             ps.setInt(6, contato.getId());
             ps.setString(7, usuarioNome);
-
+            // SALVAR ENDERECO (toJson)
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("[ContatoRepository] Exception ao editar contato");
@@ -75,9 +77,10 @@ public class ContatoRepository {
     public Contato buscarPorId(int id, String usuarioNome) throws Exception {
 
         Connection conn = FabricaDeConexoes.conectar();
+        ObjectMapper objectMapper = new ObjectMapper();
         Contato contato = new Contato();
+        
         try {
-
 //            String sql = "INSERT INTO contatos (nome, email, fone) VALUES (?,?,?)";
 //            String sql = "SELECT * FROM contatos WHERE id = ?";
             String sql = "SELECT * FROM contatos WHERE id = ? AND usuario = ?";
@@ -88,18 +91,30 @@ public class ContatoRepository {
 //            ps.executeUpdate();
 
             ResultSet rs = ps.executeQuery();
+            String json;
 
             while (rs.next()) {
+                
                 contato.setId(rs.getInt("id"));
                 contato.setNome(rs.getString("nome"));
                 contato.setEmail(rs.getString("email"));
                 contato.setFone(rs.getString("fone"));
                 contato.setUsuario(rs.getString("usuario"));
+                
+                json = rs.getString("endereco");
+                
+                if (json != null) {
+                    Endereco endereco = objectMapper.readValue(json, Endereco.class);
+                    contato.setEndereco(endereco);
+                }
             }
         } catch (SQLException e) {
             System.out.println("[ContatoRepository] Exception ao buscarPorId contato");
 //            System.out.println(e.getMessage() );
             throw e;
+        } catch (JsonProcessingException e) {
+            this.setErroDbRepository(e.getMessage());
+            System.out.println("[ContatoRepository.listar] JsonProcessingException" + getErroDbRepository());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("[ContatoRepository] Exception generico ao buscarPorId contato");
@@ -134,13 +149,11 @@ public class ContatoRepository {
 
     public List<Contato> listar(String usuarioNome) throws Exception {
 
+        System.out.println("[ContatoRepository] entrou em LISTAR");
         if (usuarioNome == null || usuarioNome.isBlank() ) {
             return null;
         }
         usuarioNome = usuarioNome.strip();
-        
-        String json = null;
-        
         ObjectMapper objectMapper = new ObjectMapper();
         List<Contato> retorno = new ArrayList<>();
         Connection conn = FabricaDeConexoes.conectar();
@@ -151,6 +164,7 @@ public class ContatoRepository {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, usuarioNome);
             ResultSet rs = ps.executeQuery();
+            String json;
 
             while (rs.next()) {
                 Contato contato = new Contato();
@@ -160,31 +174,27 @@ public class ContatoRepository {
                 contato.setEmail(rs.getString("email"));
                 contato.setFone(rs.getString("fone"));
                 json = rs.getString("endereco");
-                System.out.println("[ContatoRepository] primeiro JSON de (" + contato.getNome() + ") = " + json);
-                System.out.println("json =");
-                System.out.println(json);
                 if (json != null) {
                     Endereco endereco = objectMapper.readValue(json, Endereco.class);
                     contato.setEndereco(endereco);
-                } else {
-                    json = "";
-                    contato.setEndereco(null);
                 }
-                System.out.println("[ContatoRepository] Contato(" + contato.getNome() + "): " + contato.getEndereco());
                 contato.setUsuario(rs.getString("usuario"));
                 retorno.add(contato);
             }
         } catch (SQLException e) {
 //            this.setErroDbRepository("[ContatoRepository] SQLException ao listar todos os contatos");
             this.setErroDbRepository(FabricaDeConexoes.getErroFc());
-            System.out.println(getErroDbRepository());
+            System.out.println("[ContatoRepository.listar] SQLException" + getErroDbRepository());
 //            System.out.println(e.getMessage() );
             throw e;
+        } catch (JsonProcessingException e) {
+            this.setErroDbRepository(e.getMessage());
+            System.out.println("[ContatoRepository.listar] JsonProcessingException" + getErroDbRepository());
         } catch (Exception e) {
             e.printStackTrace();
 //            this.setErroDbRepository("[ContatoRepository] Exception generico ao listar todos os contatos");
             this.setErroDbRepository(FabricaDeConexoes.getErroFc() );
-            System.out.println(getErroDbRepository());
+            System.out.println("[ContatoRepository.listar] Exception" + getErroDbRepository());
         } finally {
 //            System.out.println("[ContatoRepository] fechando conexao com banco...");
             FabricaDeConexoes.desconectar(conn);

@@ -31,27 +31,29 @@
     <body style="margin: 20px">
         <h1>Cadastro de Contatos<h4>[<a href="Logout">Logout</a>]</h4></h1>
         <hr>
-            
-        <h4>Session ID: ${pageContext.session.id}</h4>
-        <h4>Session Owner: ${sessionScope.usuarioNome}</h4>
-            
+        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
+            <h2>DEBUG</h2>
+            <h3><p><b>Session ID: </b>${pageContext.session.id}<br>
+                    <b>Session Owner: </b>${sessionScope.usuarioNome}</p></h3>
+        </div>
+
         <%-- TESTA SE PARAMETRO "usuarioNome" FOI PASSADO E EXIBE ERRO SE NAO FOI --%>
-            
+
         <c:if test="${sessionScope.usuarioNome == null}">
             <br>
             <h4 style="color:red">Erro na requisicao: session owner (usuario) == null</h4>
         </c:if>
-            
+
         <%-- TESTA SE PARAMETRO "usuarioNome" FOI PASSADO E EXIBE O RESTO DA PAGINA SE FOI --%>
-            
+
         <c:if test="${sessionScope.usuarioNome != null}">
-            
+
             <!--<h4>usuario: ${usuario.usuario}</h4>-->
             <!--<h4>senha: ${usuario.senha}</h4>-->
             <br>
-                
+
             <%-- FORMULARIO DE INCLUSAO DE CONTATO --%>
-                
+
             <form action="CadastrarContato" method="post">
                 <table border="1" cellpadding="3" cellspacing="0">
                     <tr>
@@ -86,9 +88,9 @@
                 </table>
             </form>
             <br>
-                
+
             <%-- EXIBICAO DE MENSAGENS DE SUCESSO OU ERRO AO SALVAR CONTATOS --%>
-                
+
             <c:if test="${not empty sucesso && empty erros && empty erroDb}">
                 <h4 style="color:green">${sucesso}</h4>
             </c:if>
@@ -101,27 +103,27 @@
                 <h4 style="color:brown">Erro ao gravar contato: ${erroDb}</h4>
             </c:if>
             <br>
-                
+
             <c:if test="${sessionScope.usuarioNome == null}">
                 <h4 style="color:red">Erro na requisicao: usuario == null</h4>
             </c:if>
-                
+
             <%-- CHAMADA DE ContatoRepository DIRETAMENTE, SEM USAR O SERVLET, PARA LISTAR TODOS OS CONTATOS NO BANCO DE DADOS --%>
-                
+
             <c:if test="${sessionScope.usuarioNome != null}">
                 <jsp:useBean id="repository" scope="page" class="br.edu.infnet.infra.ContatoRepository" />
                 <c:set var="contatos" value="${repository.listar(sessionScope.usuarioNome)}" />
-                    
-                    
+
+
                 <%-- CRIA VARIAVEL 'erroDbRepository' PARA SALVAR EVENTUAL MENSAGEM DE ERRO AO CHAMAR 'repository.listar()' ACIMA --%>
-                    
+
                 <c:set var="erroDbRepository" value="${repository.getErroDbRepository()}" />
                 <c:if test="${erroDbRepository != null}">
                     <h4 style="color:red">Erro repository: ${erroDbRepository}</h4>
                 </c:if>
-                    
+
                 <%-- CRIA TABELA PARA PREENCHER COM CONTATOS RETORNADOS POR 'repository.listar()' --%>
-                    
+
                 <c:if test="${not empty contatos}">
                     <div style="width: 50%">
                         <table id="tabelaContatos" class="table table-striped table-bordered" border="1" cellpadding="3" cellspacing="0">
@@ -131,7 +133,7 @@
                                     <th>Nome</th>
                                     <th>Email</th>
                                     <th>Telefone</th>
-                                    <<th>Endereco</th>
+                                    <th>Endereco</th>
                                     <th>Owner</th>
                                     <th class="text-center">Editar</th>
                                     <th class="text-center">Excluir</th>
@@ -144,22 +146,26 @@
                                         <td>${contato.nome}</td>
                                         <td>${contato.email}</td>
                                         <td>${contato.fone}</td>
-                                        <td>${contato.endereco}- para implementar</td>
+                                        <c:if test="${not empty contato.endereco}">
+                                            <td>${contato.endereco.logradouro}, ${contato.endereco.complemento} - ${contato.endereco.bairro} - ${contato.endereco.localidade}-${contato.endereco.uf}, CEP ${contato.endereco.cep}</td>
+                                        </c:if>
+                                        <c:if test="${empty contato.endereco}">
+                                            <td></td>
+                                        </c:if>
                                         <td>${contato.usuario}</td>
                                         <td align="center">
-                                            
+
                                             <%-- FORMULARIO DE EDICAO DE CONTATO --%>
-                                                
+
                                             <form action="EditarContato" method="post">
-                                                <%--<c:set var="idDb" scope="page" value="${contato.id}" />--%>
                                                 <input type="hidden" name="id" value="${contato.id}">
                                                 <input type="image" alt="Submit" src="pencil_icon.png">
                                             </form>
                                         </td>
                                         <td align="center">
-                                            
+
                                             <%-- FORMULARIO DE EXCLUSAO DE CONTATO --%>
-                                                
+
                                             <form action="ExcluirContato" method="post">
                                                 <!-- radio e botao para excluir -->
                                                 <!-- <input type="radio" name="id" value="${contato.id}">
@@ -181,7 +187,7 @@
                 </c:if>
             </c:if>
             <%-- EXIBICAO DE MENSAGEM DE ERRO DE BANCO DE DADOS AO TENTAR LISTAR CONTATOS --%>
-                
+
             <c:if test="${erroDb == null && not empty erroDbRepository}">
                 <h4 style="color:red">Erro ao listar contatos: DB ${erroDbRepository}</h4>
             </c:if>

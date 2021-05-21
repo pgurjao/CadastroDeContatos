@@ -33,6 +33,9 @@ public class EditarContatoController extends HttpServlet {
             System.out.println("[SalvarEdicaoContatoController] NumberFormatException parsing getParameter('id')");
         }
         contato.setUsuario(session.getAttribute("usuarioNome").toString() );
+        contato.setNome(request.getParameter("nome"));
+        contato.setEmail(request.getParameter("email"));
+        contato.setFone(request.getParameter("fone"));
         
         // DEBUG (exibir contato apos obter parametros da request)
         System.out.println("[EditarContatoController] exibindo contato logo no inicio apos obter parametros do request " + contato.toString() );

@@ -5,7 +5,6 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 
-
 public class EnderecoService {
     
     private final String REST_URI = "https://viacep.com.br/ws/";
@@ -15,7 +14,8 @@ public class EnderecoService {
         
         return client
                 .target(REST_URI)
-                .path(cep).request(MediaType.APPLICATION_JSON)
+                .path(cep + "/json")
+                .request(MediaType.APPLICATION_JSON)
                 .get(Endereco.class);
     }
 }

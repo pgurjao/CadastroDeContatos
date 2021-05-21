@@ -20,6 +20,7 @@
         </div>
         <br>
         <form action="PuxarCepApi" method="post">
+            <input type="hidden" name="id" value="${contato.id}">
             <input type="text" name="cep">
             <input type="submit" value="Buscar">
         </form>

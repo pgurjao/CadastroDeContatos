@@ -12,6 +12,7 @@ public class Endereco {
     private String gia;
     private String ddd;
     private String siafi;
+    private String erro;
 
     public Endereco() {
     }
@@ -96,20 +97,26 @@ public class Endereco {
         this.siafi = siafi;
     }
 
-//    public String toJson() {
-//        System.out.println("[Endereco.toJson] entrou");
-//        return "{" + "\"cep\":\"" + cep + "\",\"logradouro\":\"" + logradouro + "\",\"complemento\":\"" + complemento + "\",\"bairro\":\"" + bairro + "\",\"localidade\":\"" + localidade + "\",\"uf\":\"" + uf +"\"" + "}";
-//    }
+    public String toJson() {
+        System.out.println("[Endereco.toJson] entrou");
+        return "{" + "\"cep\":\"" + cep + "\",\"logradouro\":\"" + logradouro + "\",\"complemento\":\"" + complemento + "\",\"bairro\":\"" + bairro + "\",\"localidade\":\"" + localidade + "\",\"uf\":\"" + uf +"\"" + "}";
+    }
 
-//    @Override
-//    public String toString() {
-//        return "Endereco{" + "cep=" + cep + ", logradouro=" + logradouro + ", complemento=" + complemento + ", bairro=" + bairro + ", localidade=" + localidade + ", uf=" + uf + '}';
-//    }
+    @Override
+    public String toString() {
+        return "Endereco{" + "cep=" + cep + ", logradouro=" + logradouro + ", complemento=" + complemento + ", bairro=" + bairro + ", localidade=" + localidade + ", uf=" + uf + '}';
+    }
 
 //    @Override
 //    public String toString() {
 //        return "Endereco{" + "cep=" + cep + ", logradouro=" + logradouro + ", complemento=" + complemento + ", bairro=" + bairro + ", localidade=" + localidade + ", uf=" + uf + ", ibge=" + ibge + ", gia=" + gia + ", ddd=" + ddd + ", siafi=" + siafi + '}';
 //    }
-    
-    
+
+    public String getErro() {
+        return erro;
+    }
+
+    public void setErro(String erro) {
+        this.erro = erro;
+    }
 }

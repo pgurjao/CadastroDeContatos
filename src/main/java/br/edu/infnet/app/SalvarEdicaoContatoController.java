@@ -23,6 +23,7 @@ public class SalvarEdicaoContatoController extends HttpServlet {
         // 1 - OBTER OS DADOS DO FORMULARIO
         String erroDb = null;
         String usuarioNome;
+        int contatoId;
 
         HttpSession session = request.getSession();
         Contato contatoParaSalvar = new Contato();
@@ -30,7 +31,8 @@ public class SalvarEdicaoContatoController extends HttpServlet {
         Endereco endereco = new Endereco();
 
         try {
-            contatoParaSalvar.setId(Integer.parseInt(request.getParameter("id")));
+            contatoId = Integer.parseInt(request.getParameter("id"));
+            contatoParaSalvar.setId(contatoId);
         } catch (NumberFormatException e) {
             System.out.println("[SalvarEdicaoContatoController] NumberFormatException parsing getParameter('id')");
         }
@@ -118,7 +120,7 @@ public class SalvarEdicaoContatoController extends HttpServlet {
                         // 3 - EXECUTAR O PROCESSAMENTO (salvar contato editado no banco de dados)
                         ContatoRepository cr = new ContatoRepository();
                         try {
-                            cr.editar(contatoParaSalvar, usuarioNome); // BUG: ESTAH SALVANDO O ENDERECO COMO 'toString' E NAO COMO 'toJson'.
+                            cr.editar(contatoParaSalvar, usuarioNome);
                         } catch (Exception e) {
                             System.out.println("[SalvarEdicaoContatoController] Exception ao editar contatoEditado");
                             erroDb = e.getMessage();
@@ -139,7 +141,7 @@ public class SalvarEdicaoContatoController extends HttpServlet {
                     } else {
                         request.setAttribute("erros", erros);
                     }
-                    request.setAttribute("contato", null);
+//                    request.setAttribute("contato", null);
                 }
             }
         } else { // Deu erro na validacao dos dados do formulario (email ou telefone invalido, etc)
@@ -154,10 +156,9 @@ public class SalvarEdicaoContatoController extends HttpServlet {
             rd.forward(request, response);
         } else {
             // Executa codigo para alterar o endereco (direciona para o JSP aplicavel, etc)
-            if (request.getParameter("BuscarCep") != null && request.getParameter("salvarContato") == null) { // VERIFICA SE BOTAO APERTADO FOI 'alterarEndereco'
-                System.out.println("[SalvarEdicaoContatoController] Botao apertado = alterar endereco");
-                System.out.println("[SalvarEdicaoContatoController] Encerrando execucao (botao salvar contato)");
-
+            if (request.getParameter("BuscarCep") != null && request.getParameter("salvarContato") == null) { // VERIFICA SE BOTAO APERTADO FOI 'BuscarCep'
+                System.out.println("[SalvarEdicaoContatoController] Encerrando execucao (botao BuscarCep)");
+                request.setAttribute("contato", contatoParaSalvar);
                 RequestDispatcher rd = request.getRequestDispatcher("buscar_cep.jsp");
                 rd.forward(request, response);
             }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 @WebServlet(name = "CadastrarContatoController", urlPatterns = {"/CadastrarContato"})
 public class CadastrarContatoController extends HttpServlet {
@@ -23,7 +24,9 @@ public class CadastrarContatoController extends HttpServlet {
         HttpSession session = request.getSession();
         String erroDb = null;
         Contato contato = new Contato();
-        contato.setNome(request.getParameter("nome"));
+//        contato.setNome(StringEscapeUtils.escapeJson(request.getParameter("nome") ) );
+        
+        contato.setNome(request.getParameter("nome") );
         contato.setEmail(request.getParameter("email"));
         contato.setFone(request.getParameter("fone"));
         contato.setUsuario( session.getAttribute("usuarioNome").toString() );
@@ -33,10 +36,15 @@ public class CadastrarContatoController extends HttpServlet {
 
         if (StringUtils.isBlank(contato.getNome())) {
             erros.add("O campo nome é obrigatório");
+        } else {
+            System.out.println("[CadastrarContatoController] contato.getNome ANTES da conversao pra UTF 8= " + contato.getNome() );
+            contato.setNome(ControllerService.convertToUtf_8(contato.getNome() ) );
         }
 
         if (StringUtils.isBlank(contato.getEmail())) {
             erros.add("O campo email é obrigatório");
+        } else {
+            contato.setEmail(ControllerService.convertToUtf_8(contato.getEmail()) );
         }
 
         if (StringUtils.isBlank(contato.getFone())) {

@@ -32,8 +32,9 @@
         <h1>Cadastro de Contatos<h4>[<a href="Logout">Logout</a>]</h4></h1>
         <hr>
         <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
-            <h2>DEBUG</h2>
+            <h2>DEBUG - lista_contatos</h2>
             <h3><p><b>Session ID: </b>${pageContext.session.id}<br>
+                    <b>contato.toString:</b>${contato}<br>
                     <b>Session Owner: </b>${sessionScope.usuarioNome}</p></h3>
         </div>
 
@@ -54,14 +55,14 @@
 
             <%-- FORMULARIO DE INCLUSAO DE CONTATO --%>
 
-            <form action="CadastrarContato" method="post">
+            <form action="CadastrarContato" method="post"  accept-charset="UTF-8">
                 <table border="1" cellpadding="3" cellspacing="0">
                     <tr>
                         <td>
                             Nome:
                         </td>
                         <td>
-                            <input type="text" name="nome" maxlength="100" value="${contato.nome}">
+                            <input type="text" name="nome" autofocus maxlength="100" value="${contato.nome}">
                         </td>
                     </tr>
                     <tr>
@@ -91,16 +92,24 @@
 
             <%-- EXIBICAO DE MENSAGENS DE SUCESSO OU ERRO AO SALVAR CONTATOS --%>
 
-            <c:if test="${not empty sucesso && empty erros && empty erroDb}">
+            <c:if test="${not empty sucesso && empty erros && empty erroDb && empty errosEndereco}">
                 <h4 style="color:green">${sucesso}</h4>
+            </c:if>
+            <c:if test="${not empty contatoNome}">
+                <h4 style="color:brown"><u>Erro ao gravar contato: '${contatoNome}'</u></h4>
             </c:if>
             <c:if test="${not empty erros}">
                 <c:forEach var="erro" items="${erros}">
                     <h4 style="color:red">Erro: ${erro}</h4>
                 </c:forEach>
             </c:if>
-            <c:if test="${erroDb != null}">
+            <c:if test="${not empty erroDb}">
                 <h4 style="color:brown">Erro ao gravar contato: ${erroDb}</h4>
+            </c:if>
+            <c:if test="${not empty errosEndereco}">
+                <c:forEach var="erro" items="${errosEndereco}">
+                    <h4 style="color:red">Erro: ${erro}</h4>
+                </c:forEach>
             </c:if>
             <br>
 

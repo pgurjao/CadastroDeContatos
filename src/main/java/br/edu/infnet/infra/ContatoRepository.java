@@ -101,9 +101,9 @@ public class ContatoRepository {
                 contato.setFone(rs.getString("fone"));
                 contato.setUsuario(rs.getString("usuario"));
                 
-                json = rs.getString("endereco");
+                json = rs.getString("endereco"); // LE O ENDERECO NO REGISTRO DO BANCO DE DADOS
                 
-                if (json != null) {
+                if (json != null) { // SE O ENDERECO EXISTE GRAVA NO CONTATO
                     Endereco endereco = objectMapper.readValue(json, Endereco.class);
                     contato.setEndereco(endereco);
                 }

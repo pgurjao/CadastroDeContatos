@@ -21,7 +21,8 @@
         <br>
         <form action="PuxarCepApi" method="post">
             <input type="hidden" name="id" value="${contato.id}">
-            <input type="text" name="cep">
+            Digite o CEP a ser localizado (somente numeros):<br>
+            <input type="text" autofocus name="cep" maxlength="8">
             <input type="submit" value="Buscar">
         </form>
         <c:if test="${not empty erros}">

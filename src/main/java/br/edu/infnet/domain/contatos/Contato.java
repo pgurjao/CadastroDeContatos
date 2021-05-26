@@ -112,7 +112,7 @@ public class Contato {
         }
         catch (NullPointerException e) {
             System.out.println("[Contato.toString] NullPointerException ao executar contato(" + this.getNome() + ").toString. Motivo: Endereco == null");
-            enderecoToString = "nulll";
+            enderecoToString = "null";
         }
         return "Contato{" + "id=" + id + ", nome=" + nome + ", email=" + email + ", fone=" + fone + ", usuario=" + usuario + ", endereco=" + enderecoToString + '}';
     }

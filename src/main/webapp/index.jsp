@@ -14,8 +14,10 @@
         <hr>
         <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
             <h2>DEBUG</h2>
-            <h3><p><b>Session ID: </b>${pageContext.session.id}<br>
-            <b>Usuario.toString(): </b>${usuario}</p></h3>
+            <h3><p><b>Session ID: </b>${pageContext.session.id}</p><br>
+            <p><b>Usuario.toString(): </b>${usuario}</p>
+            <p><b>Erros: </b>${erros}</p>
+            <p><b>ErroDb: </b>${erroDb}</p></h3>
         </div>
         <br>
 
@@ -28,7 +30,7 @@
                         Usuario:
                     </td>
                     <td>
-                        <input type="text" name="usuarioNome" maxlength="20" value="${usuario.nome}">
+                        <input type="text" name="usuarioNome" autofocus maxlength="20" value="${usuario.nome}">
                     </td>
                 </tr>
                 <tr>

@@ -23,23 +23,24 @@ public class EditarContatoController extends HttpServlet {
         System.out.println("[EditarContatoController] entrou no EditarContatoController");
         // 1 - OBTER OS DADOS DO FORMULARIO
         HttpSession session = request.getSession();
+        String usuarioNome = session.getAttribute("usuarioNome").toString();
         String erroDb = null;
-        
+
         Contato contato = new Contato();
-        
+
         try {
             contato.setId(Integer.parseInt(request.getParameter("id")));
         } catch (NumberFormatException e) {
             System.out.println("[SalvarEdicaoContatoController] NumberFormatException parsing getParameter('id')");
         }
-        contato.setUsuario(session.getAttribute("usuarioNome").toString() );
+        contato.setUsuario(usuarioNome);
         contato.setNome(request.getParameter("nome"));
         contato.setEmail(request.getParameter("email"));
         contato.setFone(request.getParameter("fone"));
-        
+
         // DEBUG (exibir contato apos obter parametros da request)
         System.out.println("[EditarContatoController] exibindo contato logo no inicio apos obter parametros do request " + contato.toString() );
-        
+
         // 2 - Buscar contato no banco de dados pela Id
         ContatoRepository cr = new ContatoRepository();
         try {
@@ -50,7 +51,7 @@ public class EditarContatoController extends HttpServlet {
         }
         // DEBUG (exibir contato apos retorno da DB)
         System.out.println("[EditarContatoController] contato apos retorno da DB = " + contato.toString());
-        
+
         // 3 - VALIDAR DADOS
         ArrayList<String> erros = new ArrayList<>();
 

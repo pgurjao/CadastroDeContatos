@@ -26,6 +26,9 @@ public class SalvarEdicaoContatoController extends HttpServlet {
         int contatoId;
 
         HttpSession session = request.getSession();
+        usuarioNome = session.getAttribute("usuarioNome").toString();
+        System.out.println("[SalvarEdicaoContatoController] usuarioNome = " + usuarioNome);
+
         Contato contatoParaSalvar = new Contato();
 
         Endereco endereco = new Endereco();
@@ -65,13 +68,18 @@ public class SalvarEdicaoContatoController extends HttpServlet {
 
         // 2 - VALIDAR DADOS
         ArrayList<String> erros = new ArrayList<>();
+        ArrayList<String> errosEndereco = new ArrayList<>();
 
         if (StringUtils.isBlank(contatoParaSalvar.getNome())) {
             erros.add("O campo nome é obrigatório");
+        } else {
+            contatoParaSalvar.setNome(ControllerService.convertToUtf_8(contatoParaSalvar.getNome() ) );
         }
 
         if (StringUtils.isBlank(contatoParaSalvar.getEmail())) {
             erros.add("O campo email é obrigatório");
+        } else {
+            contatoParaSalvar.setEmail(ControllerService.convertToUtf_8(contatoParaSalvar.getEmail()) );
         }
 
         if (StringUtils.isBlank(contatoParaSalvar.getFone())) {
@@ -80,24 +88,56 @@ public class SalvarEdicaoContatoController extends HttpServlet {
             erros.add("O campo telefone deve conter apenas números");
         }
 
-        if (erros.isEmpty()) {
+        if (StringUtils.isBlank(contatoParaSalvar.getEndereco().getCep())) { // INICIO VALIDACAO DOS CAMPOS DO ENDERECO
+            errosEndereco.add("O CEP é obrigatorio");
+        } else if (!StringUtils.isNumeric(contatoParaSalvar.getFone())) {
+            erros.add("O campo CEP deve conter apenas números");
+        }
 
-            if (request.getParameter("salvarContato") != null && request.getParameter("alterarEndereco") == null) { // VERIFICA QUAL BOTAO FOI APERTADO ('ALTERAR' ou 'SALVAR CONTATO')
-                System.out.println("[SalvarEdicaoContatoController] Botao apertado = salvar contato");              // CONTINUA SE FOI 'salvarContato'
+        if (StringUtils.isBlank(contatoParaSalvar.getEndereco().getLogradouro())) {
+            errosEndereco.add("O logradouro é obrigatorio");
+        } else {
+            endereco.setLogradouro(ControllerService.convertToUtf_8(endereco.getLogradouro() ));
+        }
 
-                // 3 - Buscar contatoAlterado no banco de dados pela Id
-                usuarioNome = session.getAttribute("usuarioNome").toString();
-                System.out.println("[SalvarEdicaoContatoController] usuarioNome = " + usuarioNome);
+        if (StringUtils.isNotBlank(contatoParaSalvar.getEndereco().getComplemento())) { // O COMPLEMENTO É OPCIONAL
+            endereco.setComplemento(ControllerService.convertToUtf_8(endereco.getComplemento()));
+        }
+
+        if (StringUtils.isBlank(contatoParaSalvar.getEndereco().getBairro())) {
+            errosEndereco.add("O bairro é obrigatorio");
+        } else {
+            endereco.setBairro(ControllerService.convertToUtf_8(endereco.getBairro()));
+        }
+
+        if (StringUtils.isBlank(contatoParaSalvar.getEndereco().getLocalidade())) {
+            errosEndereco.add("A cidade é obrigatoria");
+        } else {
+            endereco.setLocalidade(ControllerService.convertToUtf_8(endereco.getLocalidade()));
+        }
+
+        if (StringUtils.isBlank(contatoParaSalvar.getEndereco().getUf())) {
+            errosEndereco.add("A UF é obrigatoria");
+        }  else {
+            endereco.setUf(ControllerService.convertToUtf_8(endereco.getUf()));
+        }
+        
+        
+        contatoParaSalvar.setEndereco(endereco); // SETANDO O ENDERECO APOS TODAS AS CONVERSOES NOS CAMPOS
+        
+        if (erros.isEmpty() && errosEndereco.isEmpty()) {
+
+            if (request.getParameter("salvarContato") != null && request.getParameter("BuscarCep") == null) { // VERIFICA SE BOTAO APERTADO FOI 'SALVAR CONTATO' E CONTINUA SE POSITIVO
+                System.out.println("[SalvarEdicaoContatoController] Botao apertado = salvar contato, validando dados...");
+
+                // 2.1 - Buscar contatoAlterado no banco de dados pela Id
                 Contato contatoNoBanco = new Contato();
-
-                if (usuarioNome != null) {
-                    ContatoRepository cr = new ContatoRepository();
-                    try {
-                        contatoNoBanco = cr.buscarPorId(contatoParaSalvar.getId(), usuarioNome); // JA ESTA RETORNANDO COM O ENDERECO
-                    } catch (Exception e) {
-                        System.out.println("[SalvarEdicaoContatoController] Exception ao editar contato");
-                        erroDb = e.getMessage();
-                    }
+                ContatoRepository cr = new ContatoRepository();
+                try {
+                    contatoNoBanco = cr.buscarPorId(contatoParaSalvar.getId(), usuarioNome);
+                } catch (Exception e) {
+                    System.out.println("[SalvarEdicaoContatoController] Exception ao editar contato");
+                    erroDb = e.getMessage();
                 }
                 // DEBUG (exibir contatoAlterado localizado no banco)
                 System.out.println("[SalvarEdicaoContatoController] contatoNoBanco = " + contatoNoBanco.toString());
@@ -113,12 +153,12 @@ public class SalvarEdicaoContatoController extends HttpServlet {
 
                     erros.add("Voce nao alterou nenhum dado do contato, os dados que ja estavam no banco de dados foram mantidos");
                     System.out.println("[SalvarEdicaoContatoController] Voce nao alterou nenhum dado do contato, os dados que ja estavam no banco de dados foram mantidos");
-                } else {
+                } else { // ALGUM DADO DO CONTATO FOI ALTERADO, SALVANDO...
                     if (contatoNoBanco.getUsuario().equals(usuarioNome)) { // O CONTATO FOI ALTERADO E PERTENCE A ESSE USUARIO
                         System.out.println("[SalvarEdicaoContatoController] Dados do contato foram alterados, salvando...");
-
+                        
                         // 3 - EXECUTAR O PROCESSAMENTO (salvar contato editado no banco de dados)
-                        ContatoRepository cr = new ContatoRepository();
+                        cr = new ContatoRepository();
                         try {
                             cr.editar(contatoParaSalvar, usuarioNome);
                         } catch (Exception e) {
@@ -144,13 +184,14 @@ public class SalvarEdicaoContatoController extends HttpServlet {
 //                    request.setAttribute("contato", null);
                 }
             }
-        } else { // Deu erro na validacao dos dados do formulario (email ou telefone invalido, etc)
+        } else { // Deu erro na validacao dos dados do formulario (nome, email, telefone, endereco invalido, etc)
             request.setAttribute("erros", erros);
+            request.setAttribute("errosEndereco", errosEndereco);
+            request.setAttribute("contatoNome", contatoParaSalvar.getNome() );
         }
 
         // 5 - REDIRECIONAR
-        if (request.getParameter("salvarContato") != null && request.getParameter("alterarEndereco") == null) { // VERIFICA SE BOTAO APERTADO FOI 'salvarContato'
-
+        if (request.getParameter("salvarContato") != null && request.getParameter("BuscarCep") == null) { // VERIFICA SE BOTAO APERTADO FOI 'salvarContato'
             System.out.println("[SalvarEdicaoContatoController] Encerrando execucao (botao salvar contato)");
             RequestDispatcher rd = request.getRequestDispatcher("lista_contatos.jsp");
             rd.forward(request, response);
@@ -165,7 +206,7 @@ public class SalvarEdicaoContatoController extends HttpServlet {
         }
 
     }
-
+    
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

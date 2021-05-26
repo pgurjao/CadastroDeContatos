@@ -18,7 +18,7 @@
             <b>contato.toString(): </b>${contato}</p>
                 <b>Session Owner: </b>${sessionScope.usuarioNome}</p></h3>
         </div>
-        <form action="SalvarEdicaoContato" method="post">
+        <form action="SalvarEdicaoContato" method="post" accept-charset="UTF-8">
             <input type="hidden" name="id" value="${contato.id}">
             <br>
             <h4>Altere os dados desejados abaixo</h4>
@@ -128,7 +128,7 @@
                     </tr>
                     <tr>
                         <td>CEP:</td>
-                        <td><input type="text" name="cep" maxlength="8" value="${contato.endereco.cep}"></td>
+                        <td><input type="text" name="cep" autofocus maxlength="8" value="${contato.endereco.cep}"></td>
                         <td colspan="2">&nbsp;<input type="submit" name="BuscarCep" value="Buscar CEP"></td>
                     </tr>
                     <tr>

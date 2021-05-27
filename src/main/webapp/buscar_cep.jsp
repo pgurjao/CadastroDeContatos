@@ -12,12 +12,12 @@
     <body style="margin: 20px">
         <h1>Buscar CEP<h4>[<a href="Logout">Logout</a>]</h4></h1>
         <hr>
-        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
+<%--        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
             <h2>DEBUG</h2>
             <h3><p><b>Session ID: </b>${pageContext.session.id}<br>
             <b>contato.toString(): </b>${contato}</p>
             <b>Session Owner: </b>${sessionScope.usuarioNome}</p></h3>
-        </div>
+        </div>--%>
         <br>
         <form action="PuxarCepApi" method="post">
             <input type="hidden" name="id" value="${contato.id}">
@@ -34,7 +34,7 @@
         <h3>${endereco.logradouro}</h3>
         <h3>${endereco.bairro}</h3>
         <h3>${endereco.uf}</h3>
-        <br>    
+        <br>
         <h3><a href="editar_contato.jsp">← Voltar</a></h3>
         <br>
         <br>

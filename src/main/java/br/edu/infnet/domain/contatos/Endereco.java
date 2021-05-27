@@ -98,7 +98,6 @@ public class Endereco {
     }
 
     public String toJson() {
-        System.out.println("[Endereco.toJson] entrou");
         return "{" + "\"cep\":\"" + cep + "\",\"logradouro\":\"" + logradouro + "\",\"complemento\":\"" + complemento + "\",\"bairro\":\"" + bairro + "\",\"localidade\":\"" + localidade + "\",\"uf\":\"" + uf +"\"" + "}";
     }
 
@@ -107,11 +106,6 @@ public class Endereco {
         return "Endereco{" + "cep=" + cep + ", logradouro=" + logradouro + ", complemento=" + complemento + ", bairro=" + bairro + ", localidade=" + localidade + ", uf=" + uf + '}';
     }
 
-//    @Override
-//    public String toString() {
-//        return "Endereco{" + "cep=" + cep + ", logradouro=" + logradouro + ", complemento=" + complemento + ", bairro=" + bairro + ", localidade=" + localidade + ", uf=" + uf + ", ibge=" + ibge + ", gia=" + gia + ", ddd=" + ddd + ", siafi=" + siafi + '}';
-//    }
-
     public String getErro() {
         return erro;
     }
@@ -119,4 +113,5 @@ public class Endereco {
     public void setErro(String erro) {
         this.erro = erro;
     }
+
 }

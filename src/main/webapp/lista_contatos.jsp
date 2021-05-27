@@ -31,12 +31,12 @@
     <body style="margin: 20px">
         <h1>Cadastro de Contatos<h4>[<a href="Logout">Logout</a>]</h4></h1>
         <hr>
-        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
+<%--        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
             <h2>DEBUG - lista_contatos</h2>
             <h3><p><b>Session ID: </b>${pageContext.session.id}<br>
                     <b>contato.toString:</b>${contato}<br>
                     <b>Session Owner: </b>${sessionScope.usuarioNome}</p></h3>
-        </div>
+        </div>--%>
 
         <%-- TESTA SE PARAMETRO "usuarioNome" FOI PASSADO E EXIBE ERRO SE NAO FOI --%>
 

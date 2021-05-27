@@ -3,7 +3,6 @@ package br.edu.infnet.app;
 import br.edu.infnet.domain.contatos.Contato;
 import br.edu.infnet.infra.ContatoRepository;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -20,7 +19,6 @@ public class EditarContatoController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        System.out.println("[EditarContatoController] entrou no EditarContatoController");
         // 1 - OBTER OS DADOS DO FORMULARIO
         HttpSession session = request.getSession();
         String usuarioNome = session.getAttribute("usuarioNome").toString();
@@ -39,7 +37,6 @@ public class EditarContatoController extends HttpServlet {
         contato.setFone(request.getParameter("fone"));
 
         // DEBUG (exibir contato apos obter parametros da request)
-        System.out.println("[EditarContatoController] exibindo contato logo no inicio apos obter parametros do request " + contato.toString() );
 
         // 2 - Buscar contato no banco de dados pela Id
         ContatoRepository cr = new ContatoRepository();
@@ -49,8 +46,6 @@ public class EditarContatoController extends HttpServlet {
             System.out.println("[EditarContatoController] Exception ao editar contato");
             erroDb = e.getMessage();
         }
-        // DEBUG (exibir contato apos retorno da DB)
-        System.out.println("[EditarContatoController] contato apos retorno da DB = " + contato.toString());
 
         // 3 - VALIDAR DADOS
         ArrayList<String> erros = new ArrayList<>();
@@ -72,12 +67,10 @@ public class EditarContatoController extends HttpServlet {
         // 4 - COLOCAR DADOS NA REQUISICAO
         if (erros.isEmpty()) {
 //            request.setAttribute("sucesso", "Contato carregado com sucesso!");
-            System.out.println("[EditarContatoController] Inserindo 'contato' na requisicao");
             request.setAttribute("contato", contato);
         }
 
         // 5 - REDIRECIONAR
-        System.out.println("[EditarContatoController] Encerrando execucao");
         RequestDispatcher rd = request.getRequestDispatcher("editar_contato.jsp");
         rd.forward(request, response);
 

@@ -25,7 +25,7 @@ public class UsuarioRepository {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                
+
                 usuario.setNome(rs.getString("usuario"));
                 usuario.setSenha(rs.getString("senha"));
                 usuario.setCreate_time(rs.getString("create_time"));
@@ -50,7 +50,7 @@ public class UsuarioRepository {
         }
         return usuario;
     }
-    
+
     public void gravarSessao(String sessionId, String usuario) throws Exception {
 
         Connection conn = FabricaDeConexoes.conectar();

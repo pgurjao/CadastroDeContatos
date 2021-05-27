@@ -2,6 +2,7 @@ package br.edu.infnet.app;
 
 import br.edu.infnet.domain.contatos.Contato;
 import br.edu.infnet.infra.ContatoRepository;
+import br.edu.infnet.infra.ControllerService;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
@@ -12,20 +13,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 @WebServlet(name = "CadastrarContatoController", urlPatterns = {"/CadastrarContato"})
 public class CadastrarContatoController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // 1 - OBTER OS DADOS DO FORMULARIO
         HttpSession session = request.getSession();
         String erroDb = null;
         Contato contato = new Contato();
-//        contato.setNome(StringEscapeUtils.escapeJson(request.getParameter("nome") ) );
-        
+
         contato.setNome(request.getParameter("nome") );
         contato.setEmail(request.getParameter("email"));
         contato.setFone(request.getParameter("fone"));
@@ -37,14 +36,17 @@ public class CadastrarContatoController extends HttpServlet {
         if (StringUtils.isBlank(contato.getNome())) {
             erros.add("O campo nome é obrigatório");
         } else {
-            System.out.println("[CadastrarContatoController] contato.getNome ANTES da conversao pra UTF 8= " + contato.getNome() );
-            contato.setNome(ControllerService.convertToUtf_8(contato.getNome() ) );
+            if (!ControllerService.isValidString(contato.getNome() ) ) {
+                erros.add("O campo nome contem caracteres inválidos");
+            }
         }
 
         if (StringUtils.isBlank(contato.getEmail())) {
             erros.add("O campo email é obrigatório");
         } else {
-            contato.setEmail(ControllerService.convertToUtf_8(contato.getEmail()) );
+            if (!ControllerService.isValidEmail(contato.getEmail())) {
+                erros.add("O email digitado nao é válido");
+            }
         }
 
         if (StringUtils.isBlank(contato.getFone())) {

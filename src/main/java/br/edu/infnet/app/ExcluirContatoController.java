@@ -2,7 +2,6 @@ package br.edu.infnet.app;
 
 import br.edu.infnet.infra.ContatoRepository;
 import java.io.IOException;
-//import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -34,7 +33,7 @@ public class ExcluirContatoController extends HttpServlet {
         }
 
 // 3 - EXECUTAR O PROCESSAMENTO
-        String erroDb = null;
+        String erroDb;
         ContatoRepository cr = new ContatoRepository();
         try {
             cr.excluirPorId(idParaDeletar);

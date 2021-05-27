@@ -12,12 +12,12 @@
     <body style="margin: 20px">
         <h1>Editar Contato<h4>[<a href="Logout">Logout</a>]</h4></h1>
         <hr>
-        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
+<%--        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
             <h2>DEBUG</h2>
             <h3><p><b>Session ID: </b>${pageContext.session.id}<br>
             <b>contato.toString(): </b>${contato}</p>
                 <b>Session Owner: </b>${sessionScope.usuarioNome}</p></h3>
-        </div>
+        </div>--%>
         <form action="SalvarEdicaoContato" method="post" accept-charset="UTF-8">
             <input type="hidden" name="id" value="${contato.id}">
             <br>

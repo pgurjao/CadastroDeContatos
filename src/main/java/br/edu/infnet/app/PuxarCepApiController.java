@@ -58,27 +58,19 @@ public class PuxarCepApiController extends HttpServlet {
         }
         cep = request.getParameter("cep");
 
-        System.out.println("[PuxarCepApiController] 'Contato' DEPOIS de pegar parametros do request (só deve ter ID e CEP mesmo) (61) = " + contato.toString()); // SOH DEVE TER ID E CEP MESMO
-
         // 2 - VALIDAR DADOS
         if (StringUtils.isNotBlank(cep) && StringUtils.isNumeric(cep) && cep.length() == 8) { // VERIFICAR SE O CEP EH VALIDO, SEM PONTOS OU TRACOS
 
             // 3 - EXECUTAR O PROCESSAMENTO
             EnderecoService es = new EnderecoService();
             endereco = es.obterPorCep(cep);
-            System.out.println("[PuxarCepApiController] 'Endereco' retornado pela API do VIA CEP (69) = " + endereco);
-
-            System.out.println("[PuxarCepApiController] Endereco.getErro() (71) = " + endereco.getErro());
 
             if (StringUtils.isNotBlank(endereco.getErro())) { // VERIFICA SE A RESPOSTA FOI 'CEP INEXISTENTE' (erro=true no json)
                 if (endereco.getErro().equalsIgnoreCase("true")) {
-                    System.out.println("[PuxarCepApiController] endereco.getErro = TRUE (75)");
                     erros.add("CEP nao existe");
                 }
             } else { // O CEP EXISTE, INSERIR ENDERECO NO CONTATO E PEGAR DADOS DO CONTATO NA DB PARA INSERIR NA REQUISICAO
-                System.out.println("[PuxarCepApiController] endereco.getErro != TRUE (79)");
                 endereco.setCep(endereco.getCep().replace("-", ""));
-                System.out.println("[PuxarCepApiController] 'Endereco' com traco removido do CEP (81) = " + endereco);
 
                 // Buscar contato na DB pelo id (recebido de buscar_cep.jsp)
                 ContatoRepository cr = new ContatoRepository();
@@ -88,11 +80,9 @@ public class PuxarCepApiController extends HttpServlet {
                     System.out.println("[PuxarCepApiController] Exception ao buscar contato na DB (88)");
                     erroDb = e.getMessage();
                 }
-                System.out.println("[PuxarCepApiController] 'Contato' retornado da DB (com endereco antigo) (91) =" + contato);
                 contato.setEndereco(null); // APAGANDO ENDERECO DO CONTATO RETORNADO PELA DB
                 contato.setEndereco(endereco); // SETANDO ENDERECO RETORNADO PELA BUSCA DO CEP ATRAVES DA API VIACEP
-                System.out.println("[PuxarCepApiController] 'Contato' com endereco novo pronto para ser inserido no request (94) =" + contato);
-                
+
             }
         } else {
             erros.add("CEP invalido, deve conter conter 8 numeros e nao pode conter pontos ou tracos");
@@ -100,18 +90,15 @@ public class PuxarCepApiController extends HttpServlet {
         // 4 - COLOCAR DADOS NA REQUISICAO
 
 //        contato.setEndereco(enderecoOld); // CONVERTER PARAMETRO ENDERECO PARA OBJETO ENDERECO
-        System.out.println("[PuxarCepApiController] 'Contato' antes de inserir no request (103) = " + contato.toString());
         request.setAttribute("contato", contato);
 
 //        request.setAttribute("id", contatoId);
         // 5 - REDIRECIONAR
         if (erros.isEmpty()) {
-            System.out.println("[PuxarCepApiController] erros.isEmpty (109)");
             RequestDispatcher rd = request.getRequestDispatcher("editar_contato.jsp");
             rd.forward(request, response);
         } else {
             request.setAttribute("erros", erros);
-            System.out.println("[PuxarCepApiController] erros not empty (115)");
             RequestDispatcher rd = request.getRequestDispatcher("buscar_cep.jsp");
             rd.forward(request, response);
 

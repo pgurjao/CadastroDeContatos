@@ -56,7 +56,6 @@ public class ContatoRepository {
             ps.setString(3, contato.getFone());
             ps.setString(4, usuarioNome);
             ps.setString(5, contato.getEndereco().toJson());
-            System.out.println("[ContatoRepository.editar] contato.getEndereco().toJson() = " + contato.getEndereco().toJson());
             ps.setInt(6, contato.getId());
             ps.setString(7, usuarioNome);
             // SALVAR ENDERECO (toJson)
@@ -79,7 +78,7 @@ public class ContatoRepository {
         Connection conn = FabricaDeConexoes.conectar();
         ObjectMapper objectMapper = new ObjectMapper();
         Contato contato = new Contato();
-        
+
         try {
 //            String sql = "INSERT INTO contatos (nome, email, fone) VALUES (?,?,?)";
 //            String sql = "SELECT * FROM contatos WHERE id = ?";
@@ -94,15 +93,15 @@ public class ContatoRepository {
             String json;
 
             while (rs.next()) {
-                
+
                 contato.setId(rs.getInt("id"));
                 contato.setNome(rs.getString("nome"));
                 contato.setEmail(rs.getString("email"));
                 contato.setFone(rs.getString("fone"));
                 contato.setUsuario(rs.getString("usuario"));
-                
+
                 json = rs.getString("endereco"); // LE O ENDERECO NO REGISTRO DO BANCO DE DADOS
-                
+
                 if (json != null) { // SE O ENDERECO EXISTE GRAVA NO CONTATO
                     Endereco endereco = objectMapper.readValue(json, Endereco.class);
                     contato.setEndereco(endereco);
@@ -149,7 +148,6 @@ public class ContatoRepository {
 
     public List<Contato> listar(String usuarioNome) throws Exception {
 
-        System.out.println("[ContatoRepository] entrou em LISTAR");
         if (usuarioNome == null || usuarioNome.isBlank() ) {
             return null;
         }
@@ -168,7 +166,7 @@ public class ContatoRepository {
 
             while (rs.next()) {
                 Contato contato = new Contato();
-                
+
                 contato.setId(rs.getInt("id"));
                 contato.setNome(rs.getString("nome"));
                 contato.setEmail(rs.getString("email"));

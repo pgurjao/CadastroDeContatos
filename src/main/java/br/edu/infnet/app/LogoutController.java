@@ -1,7 +1,6 @@
 package br.edu.infnet.app;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,20 +14,20 @@ public class LogoutController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                
+
         // 1 - OBTER OS DADOS DO FORMULARIO
         // 2 - VALIDAR DADOS
         // 3 - EXECUTAR O PROCESSAMENTO
         HttpSession session = request.getSession();
         session.invalidate();
-        
+
         // 4 - COLOCAR DADOS NA REQUISICAO
         request.setAttribute("sucesso", "Logout realizado com sucesso!");
-        
+
         // 5 - REDIRECIONAR
         RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
         rd.forward (request, response);
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

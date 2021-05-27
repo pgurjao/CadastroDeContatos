@@ -12,13 +12,13 @@
     <body style="margin: 20px">
         <h1>Login Sistema Cadastro de Contatos</h1>
         <hr>
-        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
+<%--        <div style="border: 5px outset red; background-color: lightblue; text-align: center;">
             <h2>DEBUG</h2>
             <h3><p><b>Session ID: </b>${pageContext.session.id}</p><br>
             <p><b>Usuario.toString(): </b>${usuario}</p>
             <p><b>Erros: </b>${erros}</p>
             <p><b>ErroDb: </b>${erroDb}</p></h3>
-        </div>
+        </div>--%>
         <br>
 
         <%-- FORMULARIO DE INCLUSAO DE CONTATO --%>
